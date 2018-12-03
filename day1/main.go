@@ -4,37 +4,38 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 func main() {
-
-	file, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Print(err)
-		os.Exit(1)
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
+	parttwo := true
 
 	fmt.Println("Hello")
-	var frequency int
-	for scanner.Scan() {
-		sval := scanner.Text()
-		fmt.Printf("Adjusting frequency by %s...", sval)
-		frequency = Adjust(frequency, sval)
-		fmt.Printf("Frequency is %d.\n", frequency)
-	}
-  fmt.Println("Final Frequency is: %d.\n", frequency)
-}
+	var freq int
+	found := make(map[int]struct{})
 
-// Adjust takes an int value, and a string in the format "[+-]\d+"
-//     and returns the value + / - the string as int.
-func Adjust(val int, str string) int {
-	adj, _ := strconv.Atoi(str[1:])
-	if sval[:1] == "+" {
-		return val + adj
+	for {
+		file, err := os.Open("input.txt")
+		if err != nil {
+			fmt.Print(err)
+			os.Exit(1)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			sval := scanner.Text()
+			fmt.Printf("Current frequency %d, change of %s;", freq, sval)
+			freq = Adjust(freq, sval)
+			if _, ok := found[freq]; ok && parttwo {
+				fmt.Printf("Reached %d twice.\n", freq)
+				os.Exit(0)
+			}
+			found[freq] = struct{}{}
+			fmt.Printf("resulting frequency %d.\n", freq)
+			if !parttwo {
+				break
+			}
+		}
 	}
-	return val - adj
+	fmt.Printf("Final Frequency is: %d.\n", freq)
 }
