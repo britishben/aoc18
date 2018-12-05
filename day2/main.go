@@ -19,8 +19,11 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 	var twee, drie int
+	var ids []string
 	for scanner.Scan() {
-		a, b := checksum.Checksum(scanner.Text())
+		text := scanner.Text()
+		ids = append(ids, text)
+		a, b := checksum.Checksum(text)
 		if a {
 			twee++
 		}
@@ -29,4 +32,5 @@ func main() {
 		}
 	}
 	fmt.Printf("Final checksum: %d\n", twee*drie)
+	fmt.Printf("Common letters: %s\n", checksum.Overlap(ids))
 }
